@@ -1,6 +1,6 @@
 {
   "name": "sh-server",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A webserver that runs bash scripts. Php style.",
   "main": "src/index.js",
   "bin": {
