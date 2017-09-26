@@ -10,9 +10,16 @@ const split = require("pull-split")
 const cmds = require("./cmds")
 const bl = require("bl")
 
+const debug = require("debug")
+const _log = debug("sh-server:client")
+const uuid = require("uuid")
+
 module.exports = function Client(p, req, res, next) {
   const self = this
   self.push = pushable()
+  const id = self.id = uuid()
+  const log = self.log = _log.bind(_log, "client#" + id.split("-")[0])
+  log("created")
   const push = sth => self.push.push(JSON.stringify(sth) + "\n")
 
   //stdio=stdin,stdout,stderr,ipc
@@ -27,6 +34,7 @@ module.exports = function Client(p, req, res, next) {
   let isFinalized = false
 
   function finalize() {
+    log("finalize")
     isFinalized = true
     p.stdio[1].pipe(res)
   }
@@ -59,6 +67,7 @@ module.exports = function Client(p, req, res, next) {
         sendMany: true
       }),
       pull.drain(data => {
+        log("got ipc", data)
         if (!cmds[data.cmd]) return push({
           error: "CMD " + data.cmd + " unknown!"
         })
@@ -68,6 +77,7 @@ module.exports = function Client(p, req, res, next) {
             push(res)
           })
         } catch (e) {
+          log(e)
           console.error(e)
           return push({
             error: "Internal Error!"

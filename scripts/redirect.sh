@@ -1,3 +1,5 @@
 #!/bin/sh
 
-header "Location" "index.sh"
+header "Content-Type" "text/html"
+redirect "index.sh"
+echo "Redirecting..."

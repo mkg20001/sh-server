@@ -6,10 +6,13 @@ const path = require("path")
 const cp = require("child_process")
 const wrapper = path.join(__dirname, "wrapper.sh")
 const client = require("./client")
+const debug = require("debug")
+const log = debug("sh-server")
 
 module.exports = function ShServer(opt) {
   const self = this
   const app = opt.app ? opt.app : express()
+  log("creating new sh-server")
   if (opt.path) {
     if (!fs.existsSync(opt.path)) throw new Error(opt.path + " does not exist!")
     self.path = fs.realpathSync(opt.path)
@@ -34,6 +37,7 @@ module.exports = function ShServer(opt) {
   app.use(function (req, res, cb) {
     let filePath
     if (!(filePath = getIndexFile(req.url))) return cb()
+    log("handle %s as %s", req.url, filePath)
     if (!fs.existsSync(filePath)) return cb(new Error("ENOTFOUND: " + filePath))
     const spawnargs = [wrapper, filePath]
     let spawnopt = {

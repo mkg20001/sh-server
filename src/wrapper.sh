@@ -32,4 +32,9 @@ header() {
   sendMsg "header" "$1" "$2"
 }
 
+redirect() {
+  sendMsg "header" "Location" "$1"
+  sendMsg "status" "307"
+}
+
 . $script
