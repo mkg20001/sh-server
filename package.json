@@ -25,5 +25,14 @@
     "pull-stream-to-stream": "^1.3.4",
     "pull-utf8-decoder": "^1.0.2",
     "stream-to-pull-stream": "^1.7.2"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mkg20001/sh-server.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mkg20001/sh-server/issues"
+  },
+  "homepage": "https://github.com/mkg20001/sh-server#readme"
 }
