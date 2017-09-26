@@ -45,6 +45,8 @@ module.exports = function ShServer(opt) {
       stdio: ["pipe", "pipe", "pipe", "pipe"]
     }
     let env = spawnopt.env = {}
+    for (var e in process.env)
+      env[e] = process.env[e];
     for (var header in req.headers)
       env["WEB_" + header.toUpperCase().replace(/-/g, "_")] = req.headers[header]
     env.WRAPPER_SOURCE = __dirname
