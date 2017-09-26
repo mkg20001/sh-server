@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "A webserver that runs bash scripts. Php style.",
   "main": "src/index.js",
+  "bin": {
+    "sh-server": "cli.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -27,7 +30,8 @@
     "pull-stream-to-stream": "^1.3.4",
     "pull-utf8-decoder": "^1.0.2",
     "stream-to-pull-stream": "^1.7.2",
-    "uuid": "^3.1.0"
+    "uuid": "^3.1.0",
+    "yargs": "^9.0.1"
   },
   "devDependencies": {},
   "repository": {
@@ -37,5 +41,8 @@
   "bugs": {
     "url": "https://github.com/mkg20001/sh-server/issues"
   },
-  "homepage": "https://github.com/mkg20001/sh-server#readme"
+  "homepage": "https://github.com/mkg20001/sh-server#readme",
+  "directories": {
+    "example": "examples"
+  }
 }
