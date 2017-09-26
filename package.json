@@ -23,6 +23,7 @@
     "bl": "^1.2.1",
     "debug": "^3.0.1",
     "express": "^4.15.5",
+    "morgan": "^1.8.2",
     "pull-pushable": "^2.1.1",
     "pull-queue": "^0.1.4",
     "pull-split": "^0.2.0",

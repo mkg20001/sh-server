@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 "use strict"
 
 const argv = require("yargs")
@@ -17,7 +19,11 @@ const argv = require("yargs")
   .argv
 
 const sh = require("./src")
-const app = new sh({
+const express = require("express")
+const app = express()
+app.use(require("morgan")("combined"))
+new sh({
+  app,
   port: argv.port,
   path: argv.dir
 })
