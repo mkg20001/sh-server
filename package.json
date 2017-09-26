@@ -17,6 +17,7 @@
   "license": "MIT",
   "dependencies": {
     "JSON.sh": "^0.3.3",
+    "bl": "^1.2.1",
     "express": "^4.15.5",
     "pull-pushable": "^2.1.1",
     "pull-queue": "^0.1.4",

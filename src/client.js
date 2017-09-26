@@ -1,3 +1,5 @@
+"use strict"
+
 const toPull = require("stream-to-pull-stream")
 const toStream = require("pull-stream-to-stream")
 const pushable = require("pull-pushable")
@@ -5,11 +7,13 @@ const queue = require("pull-queue")
 const pull = require("pull-stream")
 const utf8 = require("pull-utf8-decoder")
 const split = require("pull-split")
+const cmds = require("./cmds")
+const bl = require("bl")
 
 module.exports = function Client(p, req, res, next) {
   const self = this
   self.push = pushable()
-  const push = sth => self.push.push(sth)
+  const push = sth => self.push.push(JSON.stringify(sth) + "\n")
 
   //stdio=stdin,stdout,stderr,ipc
 
@@ -17,9 +21,15 @@ module.exports = function Client(p, req, res, next) {
   const output = toStream.source(self.push)
   //const fileStream = toPull.source(p.stdio[1])
   //const errStream = toPull.source(p.stdio[2])
-  p.stdio[1].pipe(res)
   output.pipe(p.stdio[0])
   setupConnection()
+
+  let isFinalized = false
+
+  function finalize() {
+    isFinalized = true
+    p.stdio[1].pipe(res)
+  }
 
   function setupConnection() {
     return pull(
@@ -27,6 +37,7 @@ module.exports = function Client(p, req, res, next) {
       utf8(),
       split(),
       queue((end, data, cb) => {
+        if (end && !isFinalized) finalize()
         if (end) return cb(end)
         let r = []
         const f = () => cb(null, r)
@@ -48,7 +59,20 @@ module.exports = function Client(p, req, res, next) {
         sendMany: true
       }),
       pull.drain(data => {
-        push(JSON.stringify(data) + "\n")
+        if (!cmds[data.cmd]) return push({
+          error: "CMD " + data.cmd + " unknown!"
+        })
+        try {
+          cmds[data.cmd](data.args, req, res, (err, res) => {
+            if (err) throw err
+            push(res)
+          })
+        } catch (e) {
+          console.error(e)
+          return push({
+            error: "Internal Error!"
+          })
+        }
       })
     )
   }

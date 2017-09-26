@@ -8,6 +8,10 @@ fd3="/dev/fd/3"
 
 . $WRAPPER_SOURCE/JSON.sh
 
+getFromResponse() {
+  echo "$jresponse" | grep "$1" | tr "\t" "\n" | head -n 2 | tail -n 1
+}
+
 sendMsg() {
   res=""
   for i in $(seq 1 "$(expr $# + 1)"); do
@@ -19,7 +23,13 @@ sendMsg() {
   res="$res$retid"
   echo "$res" 1>&3 #send
   read response #get
-  echo "$response" | tokenize | parse | grep 'id' | tr "\t" "\n"
+  jresponse=$(echo "$response" | tokenize | parse)
+  err=$(getFromResponse "error")
+  [ ! -z "$err" ] && echo "ERROR: $err"
+}
+
+header() {
+  sendMsg "header" "$1" "$2"
 }
 
 . $script
